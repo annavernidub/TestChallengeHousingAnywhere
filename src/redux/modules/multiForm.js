@@ -11,6 +11,7 @@ import { submitIt } from '../../api';
 import step1 from './step1';
 import step2 from './step2';
 import step3, { sagas as step3Sagas } from './step3';
+import step4 from './step4';
 
 const initialState = {
   activeStep: 1,
@@ -69,6 +70,7 @@ export default combineReducers({
   step1,
   step2,
   step3,
+  step4,
 });
 
 /*  ACTION CREATORS */
