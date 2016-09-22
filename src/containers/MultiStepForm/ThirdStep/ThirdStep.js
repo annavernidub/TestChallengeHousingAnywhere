@@ -14,6 +14,7 @@ const ThirdStep = ({
       hintText="Input value..."
       errorText={textFieldError}
       disabled={validating}
+      value={inputValue}
       onChange={event => changeTextField(event.target.value)}
     />
 

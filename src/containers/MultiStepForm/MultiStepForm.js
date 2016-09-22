@@ -29,92 +29,115 @@ import ThirdStep from './ThirdStep/ThirdStep';
 
 import styles from './MultiStepForm.scss';
 
-const MultiStepForm = (props) => (
-  <div className={styles.stepper}>
-    <Stepper activeStep={props.activeStep - 1}>
-      <Step>
-        <StepLabel>Step 1</StepLabel>
-      </Step>
-      <Step>
-        <StepLabel>Step 2</StepLabel>
-      </Step>
-      <Step>
-        <StepLabel>Step 3</StepLabel>
-      </Step>
-      <Step>
-        <StepLabel>Step 4</StepLabel>
-      </Step>
-      <Step>
-        <StepLabel>Step 5</StepLabel>
-      </Step>
-      <Step>
-        <StepLabel>Finish</StepLabel>
-      </Step>
-    </Stepper>
+const UIStepper = ({ activeStep, labels }) => (
+  <Stepper activeStep={activeStep}>
+    {
+      labels.map((label, index) => (
+        <Step key={index}>
+          <StepLabel>{label}</StepLabel>
+        </Step>
+      ))
+    }
+  </Stepper>
+);
 
-    <div className={styles.stepContent}>
-      <form onSubmit={props.submitMultiStepForm}>
-        {
-          props.activeStep >= 1 &&
-          <FirstStep toggleCheckbox={props.toggleCheckbox}
-            A1={props.step1.A1}
-            A2={props.step1.A2}
-          />
-        }
-        {
-          props.activeStep >= 2 &&
-          <SecondStep toggleButton={props.toggleButton}
-            B1={props.step2.B1}
-            B2={props.step2.B2}
-          />
-        }
-        {
-          props.activeStep >= 3 &&
-          <ThirdStep inputValue={props.step3.text}
-            validateTextField={props.validateTextField}
-            changeTextField={props.changeTextField}
-            textFieldError={props.step3.textFieldError}
-            validating={props.step3.validating}
-          />
-        }
-        {
-          props.activeStep >= 4 &&
-          <FourthStep selectOption={props.selectOption}
-            selectedOption={props.step4.selectedOption}
-          />
-        }
-        {
-          props.activeStep === 5 &&
-          <div>{props.submitError}</div>
-        }
-        {
-          props.activeStep === 6 &&
-          <div>Form was succesfully submitted</div>
-        }
+UIStepper.propTypes = {
+  activeStep: PropTypes.number.isRequired,
+  labels: PropTypes.array.isRequired,
+};
 
-        <div>
+const MultiStepForm = (props) => {
+  const stepLabels = ['Step 1', 'Step 2', 'Step 3', 'Step 4', 'Step 5', 'Finish'];
+
+  const handleSubmit = e => {
+    e.preventDefault();
+
+    const data = {
+      a: [],
+      b: props.step2.B1 ? 'B1' : 'B2',
+      text: props.step3.text,
+      c: props.step4.selectedOption,
+    };
+
+    if (props.step1.A1) {
+      data.a.push('A1');
+    }
+
+    if (props.step1.A2) {
+      data.a.push('A2');
+    }
+
+    props.submitMultiStepForm(data);
+  };
+
+  return (
+    <div className={styles.stepper}>
+      <UIStepper activeStep={props.activeStep - 1} labels={stepLabels} />
+
+      <div className={styles.stepContent}>
+        <form onSubmit={handleSubmit}>
           {
-            props.activeStep > 1 && props.activeStep < 5 &&
-            <FlatButton type="button" label="back" onClick={props.prevStep} />
+            props.activeStep >= 1 &&
+            <FirstStep toggleCheckbox={props.toggleCheckbox}
+              A1={props.step1.A1}
+              A2={props.step1.A2}
+            />
           }
           {
-            props.activeStep < 5 &&
-            <FlatButton type="button"
-              label="next"
-              primary
-              disabled={!props[`step${props.activeStep}`].isStepValid}
-              onClick={props.nextStep}
+            props.activeStep >= 2 &&
+            <SecondStep toggleButton={props.toggleButton}
+              B1={props.step2.B1}
+              B2={props.step2.B2}
+            />
+          }
+          {
+            props.activeStep >= 3 &&
+            <ThirdStep inputValue={props.step3.text}
+              validateTextField={props.validateTextField}
+              changeTextField={props.changeTextField}
+              textFieldError={props.step3.textFieldError}
+              validating={props.step3.validating}
+            />
+          }
+          {
+            props.activeStep >= 4 &&
+            <FourthStep selectOption={props.selectOption}
+              selectedOption={props.step4.selectedOption}
             />
           }
           {
             props.activeStep === 5 &&
-            <FlatButton type="submit" label="submit" primary name="submit" />
+            <div>{props.submitError}</div>
           }
-        </div>
-      </form>
+          {
+            props.activeStep === 6 &&
+            <div>Form was succesfully submitted</div>
+          }
+
+          <div>
+            {
+              props.activeStep > 1 && props.activeStep < 5 &&
+              <FlatButton type="button" label="back" onClick={props.prevStep} />
+            }
+            {
+              props.activeStep < 5 &&
+              <FlatButton type="button"
+                label="next"
+                primary
+                disabled={!props[`step${props.activeStep}`].isStepValid}
+                onClick={props.nextStep}
+              />
+            }
+            {
+              props.activeStep === 5 &&
+              <FlatButton type="submit" label="submit" primary name="submit" />
+            }
+          </div>
+        </form>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 MultiStepForm.propTypes = {
   activeStep: PropTypes.number.isRequired,

@@ -95,31 +95,13 @@ export function submitMultiStepForm(data) {
 
 /*  ACTION CREATORS */
 
-function formatRequestData(data) {
-  const requestData = {
-    text: data.text,
-    c: data.c,
-    a: [],
-    b: data.B1 ? 'B1' : 'B2',
-  };
-
-  if (data.A1) {
-    requestData.a.push('A1');
-  }
-
-  if (data.A1) {
-    requestData.a.push('A2');
-  }
-}
-
 /*  SAGAS */
 export function* submitMultiStepFormSaga() {
   while (1) {
     const { data } = yield take(SUBMIT_MULTI_STEP_FORM);
 
     try {
-      yield submitIt(formatRequestData(data));
-
+      yield submitIt(data);
       yield put({ type: SUBMIT_MULTI_STEP_FORM_SUCCESS });
     } catch (err) {
       yield put({ type: SUBMIT_MULTI_STEP_FORM_FAILED, error: err.message });
