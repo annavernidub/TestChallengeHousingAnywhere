@@ -6,7 +6,7 @@ const initialState = {
   isStepValid: false,
 };
 
-export default function general(state = initialState, action = {}) {
+export default function step1(state = initialState, action = {}) {
   switch (action.type) {
     case TOGGLE_CHECKBOX: {
       const updatedState = {

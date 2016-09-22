@@ -13,6 +13,7 @@ import { combineReducers } from 'redux';
 
 import { checkIt, submitIt } from '../../api';
 import step1 from './step1';
+import step2 from './step2';
 
 const initialState = {
   activeStep: 1,
@@ -85,6 +86,7 @@ function general(state = initialState, action = {}) {
 export default combineReducers({
   general,
   step1,
+  step2,
 });
 
 /*  ACTION CREATORS */
