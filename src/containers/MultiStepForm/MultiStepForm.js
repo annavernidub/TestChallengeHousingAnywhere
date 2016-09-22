@@ -6,6 +6,8 @@ import {
   StepLabel,
 } from 'material-ui/Stepper';
 
+import FlatButton from 'material-ui/FlatButton';
+
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
@@ -16,7 +18,8 @@ import {
   validateTextField,
 } from 'redux/modules/multiForm';
 
-import FifthStep from './FifthStep/FifthStep';
+import { toggleCheckbox } from 'redux/modules/step1';
+
 import FirstStep from './FirstStep/FirstStep';
 import FourthStep from './FourthStep/FourthStep';
 import SecondStep from './SecondStep/SecondStep';
@@ -48,41 +51,59 @@ const MultiStepForm = (props) => (
     </Stepper>
 
     <div className={styles.stepContent}>
-      {
-        props.activeStep === 1 &&
-        <FirstStep onSubmit={props.nextStep} />
-      }
+      <form onSubmit={props.submitMultiStepForm}>
+        {
+          props.activeStep === 1 &&
+          <FirstStep toggleCheckbox={props.toggleCheckbox}
+            A1={props.step1.A1}
+            A2={props.step1.A2}
+          />
+        }
+        {
+          props.activeStep === 2 &&
+          <SecondStep />
+        }
+        {
+          props.activeStep === 3 &&
+          <ThirdStep
+            validateTextField={props.validateTextField}
+            textFieldValidated={props.textFieldValidated}
+            textFieldError={props.textFieldError}
+          />
+        }
+        {
+          props.activeStep === 4 &&
+          <FourthStep />
+        }
+        {
+          props.activeStep === 5 &&
+          <div>{props.submitError}</div>
+        }
+        {
+          props.activeStep === 6 &&
+          <div>Form was succesfully submitted</div>
+        }
 
-      {
-        props.activeStep === 2 &&
-        <SecondStep previousStep={props.prevStep} onSubmit={props.nextStep} />
-      }
-      {
-        props.activeStep === 3 &&
-        <ThirdStep
-          previousStep={props.prevStep}
-          onSubmit={props.nextStep}
-          validateTextField={props.validateTextField}
-          textFieldValidated={props.textFieldValidated}
-          textFieldError={props.textFieldError}
-        />
-      }
-      {
-        props.activeStep === 4 &&
-        <FourthStep previousStep={props.prevStep} onSubmit={props.nextStep} />
-      }
-      {
-        props.activeStep === 5 &&
-        <FifthStep
-          previousStep={props.prevStep}
-          onSubmit={props.submitMultiStepForm}
-          submitError={props.submitError}
-        />
-      }
-      {
-        props.activeStep === 6 &&
-        <div>Form was succesfully submitted</div>
-      }
+        <div>
+          {
+            props.activeStep > 1 && props.activeStep < 5 &&
+            <FlatButton type="button" label="back" onClick={props.prevStep} />
+          }
+          {
+            props.activeStep < 5 &&
+            <FlatButton type="button"
+              label="next"
+              primary
+              disabled={!props[`step${props.activeStep}`].isStepValid}
+              onClick={props.nextStep}
+            />
+          }
+          {
+            props.activeStep === 5 &&
+            <FlatButton type="submit" label="submit" primary name="submit" />
+          }
+        </div>
+      </form>
     </div>
   </div>
 );
@@ -96,19 +117,22 @@ MultiStepForm.propTypes = {
   textFieldValidated: PropTypes.bool.isRequired,
   textFieldError: PropTypes.string,
   submitError: PropTypes.string,
+  step1: PropTypes.object.isRequired,
 };
 
 export default connect(
   ({ multiForm }) => ({
-    activeStep: multiForm.activeStep,
-    textFieldValidated: multiForm.textFieldValidated,
-    textFieldError: multiForm.textFieldError,
-    submitError: multiForm.submitError,
+    activeStep: multiForm.general.activeStep,
+    textFieldValidated: multiForm.general.textFieldValidated,
+    textFieldError: multiForm.general.textFieldError,
+    submitError: multiForm.general.submitError,
+    step1: multiForm.step1,
   }),
   {
     prevStep,
     nextStep,
     submitMultiStepForm,
     validateTextField,
+    toggleCheckbox,
   }
 )(MultiStepForm);

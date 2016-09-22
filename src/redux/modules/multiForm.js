@@ -9,8 +9,10 @@ const VALIDATE_TEXT_FIELD_SUCCESS = 'TestChallenge/steps/VALIDATE_TEXT_FIELD_SUC
 const VALIDATE_TEXT_FIELD_FAILED = 'TestChallenge/steps/VALIDATE_TEXT_FIELD_FAILED';
 
 import { take, put, select } from 'redux-saga/effects';
+import { combineReducers } from 'redux';
 
 import { checkIt, submitIt } from '../../api';
+import step1 from './step1';
 
 const initialState = {
   activeStep: 1,
@@ -21,7 +23,7 @@ const initialState = {
   textFieldError: null,
 };
 
-export default function clientsReducer(state = initialState, action = {}) {
+function general(state = initialState, action = {}) {
   switch (action.type) {
     case NEXT_STEP: {
       const activeStep = state.nextStepAvailable ? (state.activeStep + 1) : state.activeStep;
@@ -79,6 +81,11 @@ export default function clientsReducer(state = initialState, action = {}) {
       return state;
   }
 }
+
+export default combineReducers({
+  general,
+  step1,
+});
 
 /*  ACTION CREATORS */
 export function nextStep() {
