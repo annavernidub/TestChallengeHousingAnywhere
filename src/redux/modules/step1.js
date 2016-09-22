@@ -12,7 +12,7 @@ export default function step1(state = initialState, action = {}) {
       const updatedState = {
         ...state,
         [action.name]: !state[action.name],
-      }
+      };
 
       return {
         ...updatedState,

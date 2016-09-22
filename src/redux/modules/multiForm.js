@@ -4,16 +4,13 @@ const SUBMIT_MULTI_STEP_FORM = 'TestChallenge/steps/SUBMIT_MULTI_STEP_FORM';
 const SUBMIT_MULTI_STEP_FORM_SUCCESS = 'TestChallenge/steps/SUBMIT_MULTI_STEP_FORM_SUCCESS';
 const SUBMIT_MULTI_STEP_FORM_FAILED = 'TestChallenge/steps/SUBMIT_MULTI_STEP_FORM_FAILED';
 
-const VALIDATE_TEXT_FIELD = 'TestChallenge/steps/VALIDATE_TEXT_FIELD';
-const VALIDATE_TEXT_FIELD_SUCCESS = 'TestChallenge/steps/VALIDATE_TEXT_FIELD_SUCCESS';
-const VALIDATE_TEXT_FIELD_FAILED = 'TestChallenge/steps/VALIDATE_TEXT_FIELD_FAILED';
-
-import { take, put, select } from 'redux-saga/effects';
+import { take, put } from 'redux-saga/effects';
 import { combineReducers } from 'redux';
 
-import { checkIt, submitIt } from '../../api';
+import { submitIt } from '../../api';
 import step1 from './step1';
 import step2 from './step2';
+import step3, { sagas as step3Sagas } from './step3';
 
 const initialState = {
   activeStep: 1,
@@ -48,22 +45,6 @@ function general(state = initialState, action = {}) {
       };
     }
 
-    case VALIDATE_TEXT_FIELD_SUCCESS: {
-      return {
-        ...state,
-        textFieldValidated: true,
-        textFieldError: null,
-      };
-    }
-
-    case VALIDATE_TEXT_FIELD_FAILED: {
-      return {
-        ...state,
-        textFieldValidated: false,
-        textFieldError: action.error,
-      };
-    }
-
     case SUBMIT_MULTI_STEP_FORM_SUCCESS: {
       return {
         ...state,
@@ -87,6 +68,7 @@ export default combineReducers({
   general,
   step1,
   step2,
+  step3,
 });
 
 /*  ACTION CREATORS */
@@ -109,13 +91,6 @@ export function submitMultiStepForm(data) {
   };
 }
 
-export function validateTextField(form, field) {
-  return {
-    type: VALIDATE_TEXT_FIELD,
-    form,
-    field,
-  };
-}
 /*  ACTION CREATORS */
 
 function formatRequestData(data) {
@@ -134,6 +109,7 @@ function formatRequestData(data) {
     requestData.a.push('A2');
   }
 }
+
 /*  SAGAS */
 export function* submitMultiStepFormSaga() {
   while (1) {
@@ -149,27 +125,8 @@ export function* submitMultiStepFormSaga() {
   }
 }
 
-export function* validateTextFieldSaga() {
-  while (1) {
-    const { form, field } = yield take(VALIDATE_TEXT_FIELD);
-    const value = yield select((state) => (
-      state.form[form] &&
-      state.form[form].values &&
-      state.form[form].values[field]
-    ));
-
-    try {
-      yield checkIt(value);
-
-      yield put({ type: VALIDATE_TEXT_FIELD_SUCCESS });
-    } catch (err) {
-      yield put({ type: VALIDATE_TEXT_FIELD_FAILED, error: err.message });
-    }
-  }
-}
-
 export const sagas = [
   submitMultiStepFormSaga,
-  validateTextFieldSaga,
+  ...step3Sagas,
 ];
 /*  SAGAS */

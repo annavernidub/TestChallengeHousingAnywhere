@@ -12,22 +12,22 @@ export default function step2(state = initialState, action = {}) {
       let updatedState;
 
       if (action.name === 'B1') {
-        updatedState =  {
+        updatedState = {
           B1: !state.B1,
           B2: state.B1,
-        }
+        };
       }
 
       if (action.name === 'B2') {
-        updatedState =  {
+        updatedState = {
           B1: state.B2,
           B2: !state.B2,
-        }
-      };
+        };
+      }
 
       return {
         ...updatedState,
-        isStepValid: true
+        isStepValid: true,
       };
     }
 

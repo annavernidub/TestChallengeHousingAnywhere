@@ -15,11 +15,11 @@ import {
   nextStep,
   prevStep,
   submitMultiStepForm,
-  validateTextField,
 } from 'redux/modules/multiForm';
 
 import { toggleCheckbox } from 'redux/modules/step1';
 import { toggleButton } from 'redux/modules/step2';
+import { changeTextField, validateTextField } from 'redux/modules/step3';
 
 import FirstStep from './FirstStep/FirstStep';
 import FourthStep from './FourthStep/FourthStep';
@@ -69,10 +69,11 @@ const MultiStepForm = (props) => (
         }
         {
           props.activeStep === 3 &&
-          <ThirdStep
+          <ThirdStep inputValue={props.step3.text}
             validateTextField={props.validateTextField}
-            textFieldValidated={props.textFieldValidated}
-            textFieldError={props.textFieldError}
+            changeTextField={props.changeTextField}
+            textFieldError={props.step3.textFieldError}
+            validating={props.step3.validating}
           />
         }
         {
@@ -120,11 +121,13 @@ MultiStepForm.propTypes = {
   toggleButton: PropTypes.func.isRequired,
   submitMultiStepForm: PropTypes.func.isRequired,
   validateTextField: PropTypes.func.isRequired,
+  changeTextField: PropTypes.func.isRequired,
   textFieldValidated: PropTypes.bool.isRequired,
   textFieldError: PropTypes.string,
   submitError: PropTypes.string,
   step1: PropTypes.object.isRequired,
   step2: PropTypes.object.isRequired,
+  step3: PropTypes.object.isRequired,
 };
 
 export default connect(
@@ -135,13 +138,15 @@ export default connect(
     submitError: multiForm.general.submitError,
     step1: multiForm.step1,
     step2: multiForm.step2,
+    step3: multiForm.step3,
   }),
   {
     prevStep,
     nextStep,
     submitMultiStepForm,
-    validateTextField,
     toggleCheckbox,
     toggleButton,
+    changeTextField,
+    validateTextField,
   }
 )(MultiStepForm);
