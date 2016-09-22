@@ -81,6 +81,7 @@ const MultiStepForm = (props) => {
             <FirstStep toggleCheckbox={props.toggleCheckbox}
               A1={props.step1.A1}
               A2={props.step1.A2}
+              disabled={props.activeStep !== 1}
             />
           }
           {
@@ -88,6 +89,7 @@ const MultiStepForm = (props) => {
             <SecondStep toggleButton={props.toggleButton}
               B1={props.step2.B1}
               B2={props.step2.B2}
+              disabled={props.activeStep !== 2}
             />
           }
           {
@@ -97,12 +99,14 @@ const MultiStepForm = (props) => {
               changeTextField={props.changeTextField}
               textFieldError={props.step3.textFieldError}
               validating={props.step3.validating}
+              disabled={props.activeStep !== 3}
             />
           }
           {
             props.activeStep >= 4 &&
             <FourthStep selectOption={props.selectOption}
               selectedOption={props.step4.selectedOption}
+              disabled={props.activeStep !== 4}
             />
           }
           {
@@ -116,7 +120,7 @@ const MultiStepForm = (props) => {
 
           <div>
             {
-              props.activeStep > 1 && props.activeStep < 5 &&
+              props.activeStep > 1 && props.activeStep < 6 &&
               <FlatButton type="button" label="back" onClick={props.prevStep} />
             }
             {

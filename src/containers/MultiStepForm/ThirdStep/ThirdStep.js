@@ -8,12 +8,13 @@ const ThirdStep = ({
   inputValue,
   textFieldError,
   validating,
+  disabled,
   }) => (
   <div>
     <TextField
       hintText="Input value..."
       errorText={textFieldError}
-      disabled={validating}
+      disabled={validating || disabled}
       value={inputValue}
       onChange={event => changeTextField(event.target.value)}
     />
@@ -21,7 +22,7 @@ const ThirdStep = ({
     <RaisedButton
       type="button"
       label="check"
-      disabled={validating}
+      disabled={validating || disabled}
       onClick={() => validateTextField(inputValue)}
     />
   </div>
@@ -32,6 +33,7 @@ ThirdStep.propTypes = {
   inputValue: PropTypes.string.isRequired,
   validating: PropTypes.bool.isRequired,
   textFieldError: PropTypes.string,
+  disabled: PropTypes.bool.isRequired,
 };
 
 export default ThirdStep;
